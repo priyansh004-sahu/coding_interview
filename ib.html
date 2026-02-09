@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IBM Roadmap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .badge {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 12px;
+      min-width: 180px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #2563eb;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      cursor: pointer;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: white;
+      border: 2px solid #f1f5f9;
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .task:not(:last-child) {
+      margin-bottom: 12px;
+    }
+
+    .task.completed {
+      border-color: #10b981;
+    }
+
+    .check {
+      font-size: 24px;
+    }
+
+    .title {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .completed .title {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    .topic {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #2563eb;
+      margin-left: 8px;
+    }
+
+    .completed .topic {
+      background: #f1f5f9;
+      color: #94a3b8;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1>💻 IBM Roadmap</h1>
+      <p style="color:#64748b;font-weight:600;">
+        Associate System Engineer Prep 2025
+      </p>
+    </div>
+
+    <div class="badge">
+      <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#64748b;">
+        <span>TOTAL PROGRESS</span>
+        <span id="progressText">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" id="tabs"></div>
+
+  <!-- TASK LIST -->
+  <div id="taskList"></div>
+
+  <footer>
+    Focus on Clean Code • Accuracy &gt; Speed
+  </footer>
+
+</div>
+
+<script>
+  const STORAGE_KEY = "ibm_tasks_v2";
+
+  const INITIAL_TASKS = [
+    // DAY 1: STRINGS
+    { id:1, day:1, title:"Reverse a String", topic:"Strings", completed:false },
+    { id:2, day:1, title:"Palindrome Check", topic:"Strings", completed:false },
+    { id:3, day:1, title:"Count Vowels / Consonants", topic:"Strings", completed:false },
+    { id:4, day:1, title:"Frequency of Characters", topic:"Strings", completed:false },
+    { id:5, day:1, title:"Remove Duplicates", topic:"Strings", completed:false },
+    { id:6, day:1, title:"Largest Word in Sentence", topic:"Strings", completed:false },
+    { id:7, day:1, title:"Anagram Check", topic:"Strings", completed:false },
+    { id:8, day:1, title:"IBM: String Compression (a3b2 → aaabb)", topic:"Strings", completed:false },
+
+    // DAY 2: ARRAYS
+    { id:9, day:2, title:"Second Largest in Array", topic:"Arrays", completed:false },
+    { id:10, day:2, title:"Remove Duplicates (Array)", topic:"Arrays", completed:false },
+    { id:11, day:2, title:"Find Missing Number (1..N)", topic:"Arrays", completed:false },
+    { id:12, day:2, title:"Move Zeros to End", topic:"Arrays", completed:false },
+    { id:13, day:2, title:"Linear Search", topic:"Arrays", completed:false },
+    { id:14, day:2, title:"Reverse Array", topic:"Arrays", completed:false },
+    { id:15, day:2, title:"IBM Logic: Handle '000' → '0'", topic:"Logic", completed:false },
+    { id:16, day:2, title:"GCD / HCF of Two Numbers", topic:"Math", completed:false },
+
+    // DAY 3: FUNDAMENTALS
+    { id:17, day:3, title:"OOP: 4 Pillars", topic:"Theory", completed:false },
+    { id:18, day:3, title:"DBMS: Normalization & Keys", topic:"Theory", completed:false },
+    { id:19, day:3, title:"OS: Process vs Thread", topic:"Theory", completed:false },
+    { id:20, day:3, title:"SDLC Models", topic:"Theory", completed:false },
+    { id:21, day:3, title:"Aptitude: Percentages", topic:"Aptitude", completed:false },
+    { id:22, day:3, title:"Aptitude: Time & Work", topic:"Aptitude", completed:false },
+
+    // DAY 4: INTERVIEW
+    { id:23, day:4, title:"Tell Me About Yourself", topic:"HR", completed:false },
+    { id:24, day:4, title:"Explain Your Project", topic:"HR", completed:false },
+    { id:25, day:4, title:"Why IBM?", topic:"HR", completed:false },
+    { id:26, day:4, title:"Word Ladder: WARM → COLD", topic:"Puzzle", completed:false },
+    { id:27, day:4, title:"English Grammar & Correction", topic:"English", completed:false },
+    { id:28, day:4, title:"Final Mock Test (1 Hr)", topic:"Mock", completed:false },
+    
+  ];
+
+  let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if (!tasks || tasks.length !== INITIAL_TASKS.length) {
+    tasks = INITIAL_TASKS;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  }
+
+  let activeDay = 1;
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  }
+
+  function renderTabs() {
+    const tabs = document.getElementById("tabs");
+    tabs.innerHTML = "";
+    ["Strings","Arrays","Theory","HR/Mock"].forEach((label,i)=>{
+      const btn = document.createElement("button");
+      btn.className = "tab" + (activeDay===i+1 ? " active":"");
+      btn.textContent = `Day ${i+1}: ${label}`;
+      btn.onclick = ()=>{ activeDay=i+1; render(); };
+      tabs.appendChild(btn);
+    });
+  }
+
+  function renderTasks() {
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    tasks.filter(t=>t.day===activeDay).forEach(task=>{
+      const div = document.createElement("div");
+      div.className = "task" + (task.completed?" completed":"");
+      div.onclick = ()=>{
+        task.completed = !task.completed;
+        save();
+        render();
+      };
+
+      div.innerHTML = `
+        <span class="check">${task.completed ? "✅" : " "}</span>
+        <div>
+          <div class="title">${task.title}
+            <span class="topic">${task.topic}</span>
+          </div>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function renderProgress() {
+    const done = tasks.filter(t=>t.completed).length;
+    const percent = Math.round((done / tasks.length) * 100);
+    document.getElementById("progressText").textContent = percent + "%";
+    document.getElementById("progressFill").style.width = percent + "%";
+  }
+
+  function render() {
+    renderTabs();
+    renderTasks();
+    renderProgress();
+  }
+
+  render();
+</script>
+</body>
+</html>
